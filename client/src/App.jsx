@@ -33,7 +33,9 @@ const BENEFITS = [
   { icon: "💬", title: "Real support", text: "Fast replies on WhatsApp and message tracking for every order." },
 ];
 export default function App() {
-  const [view, setView] = useState("shop");
+  const [view, setView] = useState(() => (
+    window.location.pathname.replace(/\/+$/, "") === "/seller" ? "admin" : "shop"
+  ));
   const [cfg, setCfg] = useState({ storeName: "Store", deliveryFee: 0, freeAbove: 0, whatsapp: "" });
   const [cart, setCart] = useState(() => {
     try { return JSON.parse(localStorage.getItem("dd_cart") || "[]"); } catch { return []; }
@@ -117,7 +119,6 @@ export default function App() {
           <button className="ghost light" onClick={() => setView("track")}>Track order</button>
           <button className="ghost light" onClick={() => setView("help")}>Ask us</button>
           <button className="ghost light" onClick={() => setView("cart")}>Cart ({count})</button>
-          <button className="ghost light" onClick={() => setView("admin")}>Seller</button>
         </div>
       </header>
 
@@ -326,7 +327,7 @@ function Shop({ cfg, add, favorites, setFavorites }) {
       <section className="hero-section">
         <div className="hero-copy">
           <span className="eyebrow">Fresh finds • trusted quality</span>
-          <h2>Smart shopping for your everyday needs</h2>
+          <h2>Everyday finds,<span className="hero-title-accent">with a little extra charm.</span></h2>
           <p>
             Discover trending essentials, quick local delivery, and great savings on items you use every day.
             {cfg.freeAbove ? ` Free delivery starts above ${pkr(cfg.freeAbove)}.` : ""}
@@ -1006,4 +1007,3 @@ function sortingUtils(list, mode) {
     return mode === "low" ? first - second : second - first;
   });
 }
-
