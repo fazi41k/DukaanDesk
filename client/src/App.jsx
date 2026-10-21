@@ -109,18 +109,23 @@ export default function App() {
 
   return (
     <>
-      <header>
-        <div className="bar">
-          <div className="brand-lockup">
-            <h1>{cfg.storeName}</h1>
-            <span>Jewellery, Accessories and many more</span>
-          </div>
-          <button className="home-nav" onClick={() => setView("shop")}>Home</button>
-          <button className="ghost light" onClick={() => setView("track")}>Track order</button>
-          <button className="ghost light" onClick={() => setView("help")}>Ask us</button>
-          <button className="ghost light" onClick={() => setView("cart")}>Cart ({count})</button>
-        </div>
-      </header>
+      {view !== "admin" && (
+        <>
+          <header>
+            <div className="bar">
+              <div className="brand-lockup">
+                <h1>{cfg.storeName}</h1>
+                <span>Jewellery, Accessories and many more</span>
+              </div>
+              <button className="home-nav" onClick={() => setView("shop")}>Home</button>
+              <button className="ghost light" onClick={() => setView("track")}>Track order</button>
+              <button className="ghost light" onClick={() => setView("help")}>Ask us</button>
+              <button className="ghost light" onClick={() => setView("cart")}>Cart ({count})</button>
+            </div>
+          </header>
+
+        </>
+      )}
 
       <main>
         {view === "shop" && <Shop cfg={cfg} add={add} favorites={favorites} setFavorites={setFavorites} />}
@@ -133,12 +138,15 @@ export default function App() {
         {view === "admin" && <Admin token={token} setToken={(t) => { localStorage.setItem("dd_token", t); setToken(t); }} />}
       </main>
 
-      <Footer navigate={setView} storeName={cfg.storeName} />
-
-      {cfg.whatsapp && (
-        <a className="wa" href={`https://wa.me/${cfg.whatsapp}`} target="_blank" rel="noreferrer">
-          Chat on WhatsApp
-        </a>
+      {view !== "admin" && (
+        <>
+          <Footer navigate={setView} storeName={cfg.storeName} />
+          {cfg.whatsapp && (
+            <a className="wa" href={`https://wa.me/${cfg.whatsapp}`} target="_blank" rel="noreferrer">
+              Chat on WhatsApp
+            </a>
+          )}
+        </>
       )}
     </>
   );
