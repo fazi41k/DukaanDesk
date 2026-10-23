@@ -112,15 +112,30 @@ export default function App() {
       {view !== "admin" && (
         <>
           <header>
+            <div className="announcement-bar">
+              <span>✨ Special Offer: Free delivery on all orders above {pkr(cfg.freeAbove || 3000)} • Cash on delivery & online payment available! 🚚</span>
+            </div>
             <div className="bar">
-              <div className="brand-lockup">
-                <h1>{cfg.storeName}</h1>
+              <div className="brand-lockup" onClick={() => setView("shop")}>
+                <div className="brand-title-row">
+                  <span className="brand-icon">💎</span>
+                  <h1>{cfg.storeName}</h1>
+                </div>
                 <span>Jewellery, Accessories and many more</span>
               </div>
-              <button className="home-nav" onClick={() => setView("shop")}>Home</button>
-              <button className="ghost light" onClick={() => setView("track")}>Track order</button>
-              <button className="ghost light" onClick={() => setView("help")}>Ask us</button>
-              <button className="ghost light" onClick={() => setView("cart")}>Cart ({count})</button>
+              <button className={`nav-link ${view === "shop" ? "home-nav" : "ghost light"}`} onClick={() => setView("shop")}>
+                <span>🛍️</span> Home
+              </button>
+              <button className={`nav-link ghost light ${view === "track" ? "active" : ""}`} onClick={() => setView("track")}>
+                <span>📦</span> Track order
+              </button>
+              <button className={`nav-link ghost light ${view === "help" ? "active" : ""}`} onClick={() => setView("help")}>
+                <span>💬</span> Ask us
+              </button>
+              <button className={`nav-link ghost light cart-nav-btn ${view === "cart" ? "active" : ""} ${count > 0 ? "has-items" : ""}`} onClick={() => setView("cart")}>
+                <span>🛒</span> Cart
+                <span className="cart-badge">{count}</span>
+              </button>
             </div>
           </header>
 
@@ -142,8 +157,10 @@ export default function App() {
         <>
           <Footer navigate={setView} storeName={cfg.storeName} />
           {cfg.whatsapp && (
-            <a className="wa" href={`https://wa.me/${cfg.whatsapp}`} target="_blank" rel="noreferrer">
-              Chat on WhatsApp
+            <a className="wa" href={`https://wa.me/${cfg.whatsapp}`} target="_blank" rel="noreferrer" title="Chat on WhatsApp">
+              <span>💬</span>
+              <span>Chat on WhatsApp</span>
+              <span className="wa-status-dot"></span>
             </a>
           )}
         </>
@@ -224,7 +241,7 @@ function Feedback() {
           <small className="muted">Your email is kept private and is not shown with your comment.</small>
           {error && <span className="err" role="alert">{error}</span>}
           {success && <span className="ok" role="status">{success}</span>}
-          <button type="submit">Submit feedback</button>
+          <button type="submit"><span>⭐</span> Submit feedback</button>
         </form>
 
         <div className="feedback-list" aria-live="polite">
@@ -341,8 +358,8 @@ function Shop({ cfg, add, favorites, setFavorites }) {
             {cfg.freeAbove ? ` Free delivery starts above ${pkr(cfg.freeAbove)}.` : ""}
           </p>
           <div className="hero-cta">
-            <button onClick={() => window.scrollTo({ top: 540, behavior: "smooth" })}>Shop now</button>
-            <button className="ghost light" onClick={() => window.scrollTo({ top: 1000, behavior: "smooth" })}>How it works</button>
+            <button onClick={() => window.scrollTo({ top: 540, behavior: "smooth" })}><span>✨</span> Shop now</button>
+            <button className="ghost light" onClick={() => window.scrollTo({ top: 1000, behavior: "smooth" })}><span>💡</span> How it works</button>
           </div>
           <div className="hero-stats">
             <div><strong>10k+</strong><span>happy shoppers</span></div>
@@ -467,11 +484,11 @@ function Shop({ cfg, add, favorites, setFavorites }) {
                   {p.salePrice ? <span className="old">{pkr(p.price)}</span> : null}
                 </div>
                 <div className="status-row">
-                  {p.stock < 1 ? <span className="tag danger">Sold out</span> : p.stock < 5 ? <span className="tag danger">Only {p.stock} left</span> : <span className="tag success">In stock</span>}
+                  {p.stock < 1 ? <span className="tag danger">✕ Sold out</span> : p.stock < 5 ? <span className="tag danger">🔥 Only {p.stock} left</span> : <span className="tag success">✓ In stock</span>}
                 </div>
                 <div className="product-actions">
-                  <button className="ghost" onClick={() => setQuickView(p)}>Quick view</button>
-                  <button disabled={p.stock < 1} onClick={() => add(p)}>Add</button>
+                  <button className="ghost" onClick={() => setQuickView(p)}><span>👁️</span> Quick view</button>
+                  <button disabled={p.stock < 1} onClick={() => add(p)}><span>🛒</span> Add</button>
                 </div>
               </div>
             </article>
@@ -495,11 +512,11 @@ function Shop({ cfg, add, favorites, setFavorites }) {
               </div>
               <p className="muted">{quickView.description}</p>
               <div className="status-row">
-                {quickView.stock < 1 ? <span className="tag danger">Sold out</span> : <span className="tag success">Ready to ship</span>}
+                {quickView.stock < 1 ? <span className="tag danger">✕ Sold out</span> : <span className="tag success">✓ Ready to ship</span>}
                 <span className="tag">{quickView.category || "General"}</span>
               </div>
               <div className="row">
-                <button onClick={() => { add(quickView); setQuickView(null); }}>Add to cart</button>
+                <button onClick={() => { add(quickView); setQuickView(null); }}><span>🛒</span> Add to cart</button>
                 <button className="ghost" onClick={() => setQuickView(null)}>Continue shopping</button>
               </div>
             </div>
@@ -535,7 +552,7 @@ function Cart({ cfg, cart, setCart }) {
   if (done) {
     return (
       <div className="panel order-status-box">
-        <h2>Order placed successfully</h2>
+        <h2>🎉 Order placed successfully!</h2>
         <div className="order-reference">
           <div>
             <span className="muted">Order ID</span>
@@ -653,7 +670,7 @@ function Cart({ cfg, cart, setCart }) {
           </div>
         )}
         {err && <span className="err">{err}</span>}
-        <button onClick={place}>Place order</button>
+        <button onClick={place}><span>🛍️</span> Place order</button>
       </div>
     </div>
   );
@@ -684,7 +701,7 @@ function Track() {
       <label className="field-label">Phone number
         <input type="tel" autoComplete="tel" placeholder="Enter the phone number used at checkout" value={phone} onChange={(e) => setPhone(e.target.value)} />
       </label>
-      <button onClick={go}>Find order</button>
+      <button onClick={go}><span>🔍</span> Find order</button>
       {err && <span className="err">{err}</span>}
       {o && (
         <div className="order-status-box">
@@ -729,7 +746,7 @@ function Help() {
       <input placeholder="Order number (optional)" value={f.orderNo} onChange={(e) => setF({ ...f, orderNo: e.target.value })} />
       <textarea placeholder="Your question" value={f.text} onChange={(e) => setF({ ...f, text: e.target.value })} />
       {err && <span className="err">{err}</span>}
-      <button onClick={send}>Send question</button>
+      <button onClick={send}><span>📨</span> Send question</button>
       {msgs.map((m) => (
         <p key={m._id}>
           <strong>You:</strong> {m.text}
